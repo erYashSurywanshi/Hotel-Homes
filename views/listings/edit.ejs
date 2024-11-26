@@ -1,0 +1,70 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<form
+  method="post"
+  action="/listings/<%=listIteams._id%>?_method=PUT"
+  class="edit-form"
+>
+  <h3>Edit Existing Data!</h3>
+
+  <div class="edit-groups">
+    <label for="title">Title</label>
+    <input
+      type="text"
+      name="listing[title]"
+      value="<%=listIteams.title  %>"
+      id="title"
+    />
+  </div>
+
+  <div class="edit-groups">
+    <label for="description">Description</label>
+    <input
+      type="text"
+      name="listing[description]"
+      value="<%=listIteams.description  %>"
+      id="description"
+    />
+  </div>
+
+  <div class="edit-groups">
+    <div class="edit-groups">
+      <label for="image">Image URL</label>
+      <input type="text" name="listing[image]" value="<%= listIteams.image.url|| 'https://c4.wallpaperflare.com/wallpaper/863/332/850/life-resort-sea-travel-wallpaper-preview.jpg'%>" id="image" required>
+    </div>
+    
+  <div class="edit-groups">
+    <label for="price">Price</label>
+    <input
+      type="number"
+      name="listing[price]"
+      value="<%=listIteams.price  %>"
+      id="price"
+    />
+  </div>
+
+  <!-- Country and Location in the same row -->
+  <div class="form-row">
+    <div class="edit-groups">
+      <label for="country">Country</label>
+      <input
+        type="text"
+        name="listing[country]"
+        value="<%=listIteams.country  %>"
+        id="country"
+      />
+    </div>
+
+    <div class="edit-groups">
+      <label for="location">Location</label>
+      <input
+        type="text"
+        name="listing[location]"
+        value="<%=listIteams.location  %>"
+        id="location"
+      />
+    </div>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>

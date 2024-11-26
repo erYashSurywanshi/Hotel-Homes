@@ -1,0 +1,160 @@
+<% layout("/layouts/boilerplate.ejs") %>
+    <style>
+        .listing-container {
+            background: white;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .listing-container img {
+            width: 80%;
+            height: 25rem;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h4 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 18px;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        .EditList,
+        button {
+            display: inline-block;
+            background-color: #ff6f61;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .EditList:hover,
+        button:hover {
+            background-color: #ff3d3d;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .listing-container {
+                padding: 15px;
+            }
+
+            li {
+                font-size: 16px;
+            }
+
+            .EditList,
+            button {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+
+        }
+        .card-review{
+            margin-top: 20px;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        
+    </style>
+    </head>
+
+    <body>
+
+        <div class="listing-container">
+
+            <h4>
+                <%= listIteams.title %>
+            </h4>
+
+            <!-- Displaying the Image on Top, centered -->
+            <img src="<%= listIteams.image.url %>" alt="Listing Image">
+
+            <ul>
+                <li>Description: <%= listIteams.description %>
+                </li>
+                <li>
+                    Price: &#8377;
+                    <%= listIteams.price ? listIteams.price.toLocaleString("en-IN") : "N/A" %>
+                </li>
+                <li>Location: <%= listIteams.location %>
+                </li>
+                <li>Country: <%= listIteams.country %>
+                </li>
+            </ul>
+
+            <!-- Links for Edit and Delete -->
+            <a class="EditList" href="/listings/<%=listIteams._id%>/edit">Edit this listing</a>
+            <br><br>
+
+            <form method="POST" action="/listings/<%=listIteams._id%>?_method=DELETE">
+                <button>DELETE</button>
+            </form>
+
+            <div class="col-8 offset-2">
+                <h2>Leave your Review</h2>
+
+                <form action="/listings/<%=listIteams.id%>/reviews" method="POST" >
+                    <label for="rating" class="form-label"></label>
+                    <input type="range" class="form-control mb-3" class="form-range" min="1" max="5" id="rating"
+                        name="review[rating]">
+
+                    <label for="comment" class="form-label"></label>
+                    <textarea 
+                    class="form-control mb-3" 
+                    rows="5" 
+                    cols="10" 
+                    id="comment"
+                    name="review[comment]"
+                    required
+                    ></textarea>
+                    <div class="invalid-feedback"> pleace complete the review</div>
+                    <button class="btn btn-primary me-md-2">
+                        Submit
+                    </button>
+                </form>
+                <hr>
+
+                <h2>All Reviews</h2>
+                <div class="row">
+                <% for( review of listIteams.reviews){  %>
+                        <div class="card-review border 1px solid black  mb-3 col-5 ms-3 ">
+                            <div class="card-body " >
+                                <h5 class="card-face">Yash Surywanshi</h5>
+                              <p>  <%= review.comment %> </p>
+                                <%=review.rating  %> <i class="fa-solid fa-star "></i>
+                                <form method="POST" action="/listings/<%=listIteams._id%>/reviews/<%=review._id%>?_method=DELETE">
+                                    <button class="btn btn-outline-dark btn-sm">Delete</button>
+                                </form>
+                           </div>
+                           
+                       </div>
+                       
+                    <%}%>
+                </div>
+        </div>
+    </body>
+
+    </html>
