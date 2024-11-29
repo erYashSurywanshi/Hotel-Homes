@@ -5,7 +5,8 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressErrors.js");
-
+const session =require("express-session")
+const flash = require("connect-flash")
 
 const listingview = require("./router/listing.js")
 const reviews = require("./router/review.js")
@@ -30,6 +31,30 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 
+const sessionOptions ={
+  secret:"secret",
+  resave:false,
+  saveUninitialized:true,
+  cookie:{
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly:true
+  }
+}
+
+
+// ⁡⁣⁢⁣𝗗͟𝗲͟𝗳͟𝗶͟𝗻͟𝗲 𝘁͟𝗵͟𝗲 𝘀͟𝗰͟𝗵͟𝗲͟𝗺͟𝗮 𝗳͟𝗼͟𝗿 𝘁͟𝗵͟𝗲 𝗹͟𝗶͟𝘀͟𝘁͟𝗶͟𝗻͟𝗴͟𝘀⁡
+app.get("/", (req, res) => {
+  res.send("Welcome to the API");
+});
+
+app.use(session(sessionOptions))
+app.use(flash())
+
+app.use((req,res,next)=>{
+  res.locals.success = req.flash("success");
+  next();
+})
 
 // 𝙏𝙝𝙞𝙨 𝙞𝙨 𝙡𝙞𝙨𝙩𝙞𝙣𝙜 & 𝙧𝙚𝙫𝙞𝙚𝙬 𝙧𝙤𝙪𝙩𝙚𝙧 𝙨𝙤 𝙗𝙚 𝙘𝙖𝙧𝙚𝙛𝙪𝙡𝙡 𝙬𝙞𝙩𝙝 𝙝𝙞𝙢
 
@@ -38,11 +63,6 @@ app.use("/listings/:id/reviews", reviews)
 
 
 
-
-// ⁡⁣⁢⁣𝗗͟𝗲͟𝗳͟𝗶͟𝗻͟𝗲 𝘁͟𝗵͟𝗲 𝘀͟𝗰͟𝗵͟𝗲͟𝗺͟𝗮 𝗳͟𝗼͟𝗿 𝘁͟𝗵͟𝗲 𝗹͟𝗶͟𝘀͟𝘁͟𝗶͟𝗻͟𝗴͟𝘀⁡
-app.get("/", (req, res) => {
-  res.send("Welcome to the API");
-});
 
 // this is error handler
 app.all("*", (req, res, next) => {

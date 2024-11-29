@@ -38,6 +38,7 @@ router.get("/new", (req, res) => {
   wrapAsync(async (req, res) => {
     let newListing = new listing(req.body.listing);
     await newListing.save();
+    req.flash("success", "New Listing is Created!")
     res.redirect("/listings");
   }));
   // ⁡⁢⁣⁢4Update request for show data⁡
@@ -56,6 +57,7 @@ router.get("/new", (req, res) => {
     wrapAsync(async (req, res) => {
       const { id } = req.params;
       const deletelisting = await listing.findByIdAndDelete(id);
+      req.flash("success", " Listing is Deleted!");
       res.redirect("/listings");
     })
   );
@@ -66,6 +68,7 @@ router.get("/new", (req, res) => {
     wrapAsync(async (req, res) => {
       const { id } = req.params;
       await listing.findByIdAndUpdate(id, { ...req.body.listing });
+      req.flash("success", " Listing is Updated!")
       res.redirect(`/listings/${id}`);
     })
   );
