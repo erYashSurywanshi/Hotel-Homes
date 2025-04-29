@@ -1,23 +1,306 @@
-<% layout("/layouts/boilerplate.ejs") %>  
+<% layout("/layouts/boilerplate.ejs") %>
 
-  <h3>All Listings</h3>
-  <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
-    <% for(let Listing of allListings) { %>
-      <a href="/listings/<%= Listing._id %>">
-        <div class="card">
-          <img
-            src="<%= Listing.image.url %>"
-            class="card-img-top"
-            alt="listing image"
-            style="height: 20rem"
-          />
-          <div class="card-img-overlay">Hello</div>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+
+<style>
+  #filters {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+
+  .filter {
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    opacity: 0.7;
+    transition: 0.3s ease;
+    width: 60px;
+    margin-right: 20px;
+  }
+
+  .filter:hover {
+    opacity: 1;
+    transform: translateY(-5px);
+    cursor: pointer;
+  }
+
+  .filter i {
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: #ff0000;
+    transition: font-size 0.3s ease;
+  }
+
+  .filter p {
+    font-size: 12px;
+    font-weight: 500;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-image: none;
+  }
+
+  .carousel-control-prev::after,
+  .carousel-control-next::after {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-top: 3px solid rgb(0, 0, 0);
+    border-right: 3px solid rgb(0, 0, 0);
+  }
+
+  .carousel-control-prev::after {
+    transform: rotate(-135deg);
+  }
+
+  .carousel-control-next::after {
+    transform: rotate(45deg);
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgb(106, 106, 106);
+    border-radius: 25px;
+    margin-top: 20px;
+  }
+
+  /* Responsive Changes */
+  @media (max-width: 768px) {
+    .filter {
+      width: 70px;
+    }
+    .filter i {
+      font-size: 24px;
+    }
+    .filter p {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .filter {
+      width: 60px;
+    }
+    .filter i {
+      font-size: 20px;
+    }
+    .filter p {
+      font-size: 10px;
+    }
+  }
+  .form-switch {
+    border: 1.3px solid rgb(53, 51, 51);
+    width: 180px;
+    margin-left: 70rem;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    font-weight: 500;
+    font-size: 14px;
+    background-color: aliceblue;
+  }
+  #flexSwitchCheckDefault {
+    padding: 8px;
+  }
+  .taxinfo {
+    display: none;
+  }
+
+  @media (1200px<width<1400px) {
+    .form-switch {
+      margin-left: 58rem;
+    }
+  }
+  @media (1000px<width<1200px) {
+    .form-switch {
+      margin-left: 47rem;
+    }
+  }
+  @media (765px<width<1000px) {
+    .form-switch {
+      margin-left: 32rem;
+    }
+  }
+  @media (450px<width<765px) {
+    .form-switch {
+      margin-left: 21rem;
+    }
+  }
+</style>
+
+<div
+  id="carouselExampleControls"
+  class="carousel slide"
+  data-bs-ride="carousel"
+>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div id="filters">
+        <div class="filter">
+          <i class="fa-solid fa-fire-flame-curved"></i>
+          <p>Trending</p>
         </div>
-        <p class="card-text">
-          <b><%= Listing.title %><br /></b>
-          <% if (Listing.price) { %> &#8377;<%= Listing.price.toLocaleString("en-IN") %>/night <% } %>
-        </p>
-      </a>
-    <% } %>
+        <div class="filter">
+          <i class="fa-solid fa-bed"></i>
+          <p>Rooms</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-city"></i>
+          <p>Iconic Cities</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-water-ladder"></i>
+          <p>Amazing Pools</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-umbrella-beach"></i>
+          <p>Beach</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-house-lock"></i>
+          <p>Cabins</p>
+        </div>
+        <div class="filter">
+          <i class="fa-brands fa-slack"></i>
+          <p>OMG!</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-hot-tub-person"></i>
+          <p>Spa</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-utensils"></i>
+          <p>Food</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div id="filters">
+        <div class="filter">
+          <i class="fa-solid fa-mountain-sun"></i>
+          <p>Mountain</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-chess-rook"></i>
+          <p>Castles</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-campground"></i>
+          <p>Camping</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-tractor"></i>
+          <p>Farms</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-tree"></i>
+          <p>Nature</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-snowflake"></i>
+          <p>Snow</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-ship"></i>
+          <p>Boating</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-person-hiking"></i>
+          <p>Hiking</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-vihara"></i>
+          <p>Temple</p>
+        </div>
+        <div class="filter">
+          <i class="fa-solid fa-skiing"></i>
+          <p>Skiing</p>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- Corrected buttons -->
+  <button1
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#carouselExampleControls"
+    data-bs-slide="prev"
+  ></button1>
+  <button1
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#carouselExampleControls"
+    data-bs-slide="next"
+  ></button1>
+
+  <div class="form-check-reverse form-switch">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      role="switch"
+      id="flexSwitchCheckDefault"
+    />
+    <label class="form-check-label" for="flexSwitchCheckDefault">
+      Display Total Taxes
+    </label>
+  </div>
+</div>
+
+<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
+  <% for(let Listing of allListings) { %>
+  <a href="/listings/<%= Listing._id %>">
+    <div class="card">
+      <img
+        src="<%= Listing.image.url %>"
+        class="card-img-top"
+        alt="listing image"
+        style="height: 20rem"
+      />
+      <div class="card-img-overlay"></div>
+    </div>
+    <p class="card-text">
+      <b><%= Listing.title %><br /></b>
+      <% if (Listing.price) { %> &#8377;<%=
+      Listing.price.toLocaleString("en-IN") %>/night<i class="taxinfo">
+        +18% GST</i
+      >
+
+      <% } %>
+    </p>
+  </a>
+  <% } %>
+</div>
+
+<script>
+  let TexSwitch = document.getElementById("flexSwitchCheckDefault");
+  TexSwitch.addEventListener("click", () => {
+    let taxinfo = document.getElementsByClassName("taxinfo");
+    for (info of taxinfo) {
+      if (info.style.display != "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }
+    }
+  });
+</script>

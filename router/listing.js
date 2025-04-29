@@ -1,76 +1,35 @@
 const express = require("express");
 const router = express.Router();
-const ExpressError = require("../utils/ExpressErrors.js");
 const wrapAsync = require("../utils/wrapAsync");
 const { listingschema } = require("../schema.js");
-const listing = require("../model/listing.js")
+const listing = require("../model/listing.js");
+const { Loginfunc, validationListing } = require("../meddleware.js");
+const PostSend = require("../Controllers/listing.js")
+const IndexListing = require("../Controllers/listing.js");
+const ListingId = require("../Controllers/listing.js");
+const New = require("../Controllers/listing.js");
+const Edit = require("../Controllers/listing.js");
+const EditPut = require("../Controllers/listing.js");
+const deleteRoute = require("../Controllers/listing.js");
 
-// Create a new instance of the router
-const validationListing =(req, res, next) => {
-    let {error} =listingschema.validate(req.body)
-    if (error) {
-      throw new ExpressError(error, 400);  // Correct: status code is a number
-    }else{
-      next();
-    }
-  } 
+const multer = require("multer");
+const {storage} =require("../cloudConfig.js")
+const upload = multer({storage});
 
-router.get("/new", (req, res) => {
-    res.render("listings/new.ejs");
-  });
+router
+  .route("/")
+  .get(wrapAsync(IndexListing.Index))
+  .post(upload.single("listing[image]"),validationListing, wrapAsync(PostSend.NewPost));
   
-  // Get all listings
-  router.get("/", wrapAsync(async (req, res) => {
-    const allListings = await listing.find({});
-    res.render("listings/index.ejs", { allListings });
-  }));
-  
-  // Get listing by ID
-  router.get("/:id", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const listIteams = await listing.findById(id).populate("reviews");
-    res.render("listings/show.ejs", { listIteams });
-  }));
-  
-  // Post request for new listing
-  router.post("/", 
-  validationListing,
-  wrapAsync(async (req, res) => {
-    let newListing = new listing(req.body.listing);
-    await newListing.save();
-    req.flash("success", "New Listing is Created!")
-    res.redirect("/listings");
-  }));
-  // ⁡⁢⁣⁢4Update request for show data⁡
-  router.get(
-    "/:id/edit",
-    wrapAsync(async (req, res) => {
-      const { id } = req.params;
-      const listIteams = await listing.findById(id);
-      res.render("listings/edit.ejs", { listIteams });
-    })
-  );
-  
-  //⁡⁢⁣⁢delete route⁡
-  router.delete(
-    "/:id",
-    wrapAsync(async (req, res) => {
-      const { id } = req.params;
-      const deletelisting = await listing.findByIdAndDelete(id);
-      req.flash("success", " Listing is Deleted!");
-      res.redirect("/listings");
-    })
-  );
-  // ⁡⁢⁣⁢5Update request for show data⁡
-  router.put(
-    "/:id",
-    validationListing,
-    wrapAsync(async (req, res) => {
-      const { id } = req.params;
-      await listing.findByIdAndUpdate(id, { ...req.body.listing });
-      req.flash("success", " Listing is Updated!")
-      res.redirect(`/listings/${id}`);
-    })
-  );
+router.get("/new", Loginfunc, New.NewList);
 
-  module.exports = router;
+router
+  .route("/:id")
+  .get(wrapAsync(ListingId.ListId))
+  .delete(Loginfunc, wrapAsync(deleteRoute.DestoryRoute))
+  .put(Loginfunc,upload.single("listing[image]"), validationListing, wrapAsync(EditPut.PutEditRoute));
+
+// ⁡⁢⁣⁢4Update request for show data⁡
+router.get("/:id/edit", Loginfunc, wrapAsync(Edit.EditCurrRoute));
+
+module.exports = router;

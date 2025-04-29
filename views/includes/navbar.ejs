@@ -1,6 +1,27 @@
+
+<style>
+  .navbar-nav form{
+    margin-right: 26rem;
+  }
+  .navbar-nav input{
+   width: 200px;
+   background-color: beige;
+  }
+  .btn-search{
+    width: 100px;
+    height: 40px;
+    border-radius: 100px;
+  }
+  .fa-solid{
+    display: inline;
+    margin-right:10px ;
+  }
+
+</style>
+
 <nav class="navbar navbar-expand-md navbar-light bg-light border-bottom sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" style="color: red" href="/"><i class="fas fa-compass"></i></a>
+    <a class="navbar-brand " style="color: rgb(255, 0, 0); ; " href="/listings"><i class="fas fa-compass"></i></a>
     <button
       class="navbar-toggler"
       type="button"
@@ -14,11 +35,30 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="/">Home</a>
+
         <a class="nav-link" href="/listings">Listings</a>
-        <a class="nav-link" href="/listings/new">Create New</a>
+        
       </div>
     </div>
+    <div class=" navbar-nav ">
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-search " type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+      </form>
+    </div>
+
+    <div class="navbar-nav ms-auto">
+      <a class="nav-link" href="/listings/new">Create Listing </a>
+        <% if(!Userdata){ %>
+          <a class="nav-link active" aria-current="page" href="/Login"><b>LogIn</b></a>
+        <a class="nav-link" href="/SignUp"><b>SignUp</b>
+        </a>
+        <% } %>
+        <% if(Userdata){ %>
+        <a class="nav-link" href="/Logout"><b>LogOut</b></a>
+        <% } %>
+      </div>
+    
   </div>
 </nav>
 

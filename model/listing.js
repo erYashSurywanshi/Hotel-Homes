@@ -11,11 +11,8 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        filename: { type: String, default: "defaultImage" },
-        url: { 
-            type: String, 
-            default: "https://c4.wallpaperflare.com/wallpaper/863/332/850/life-resort-sea-travel-wallpaper-preview.jpg" 
-        }
+       url: String,
+       filename: String 
     },
     price: {
         type: Number,
@@ -32,6 +29,12 @@ const listingSchema = new Schema({
                 ref: "Review"
             },
           ],
+    Owner:
+        {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
+    
        
 });
 
