@@ -11,6 +11,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressErrors.js");
 const session =require("express-session")
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash")
 const passport =require("passport")
 const LocalStorage = require("passport-local")
@@ -21,9 +22,18 @@ const reviewsRouter = require("./router/review.js");
 const UserRouter = require("./router/User.js");
 
 // Connect to MongoDB
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/Listing-Host");
-}
+// async function main() {
+//   await mongoose.connect("mongodb://127.0.0.1:27017/Listing-Host");
+// }
+
+const dbUrl = process.env.ATLASDB;
+
+    async function main(){
+      await mongoose.connect(dbUrl);
+    }
+
+
+
 main()
   .then(() => {
     console.log("Connected to MongoDB");
@@ -31,6 +41,8 @@ main()
   .catch((err) => {
     console.error(err);
   });
+
+  
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -45,10 +57,22 @@ app.use(express.json());
 //   res.send("Welcome to the API");
 // });
 
+const store = MongoStore.create({
+  mongoUrl:dbUrl,
+  crypto:{
+    secret: process.env.SECRTE,
+  },
+  touchAfter: 24 * 3600,
+})
+
+store.on("error",()=>{
+  console.log("Error in to the mongo session store",err)
+})
 
 // cookies and session settings
 const sessionOptions ={
-  secret:"secret",
+  store,
+  secret:process.env.SECRTE,
   resave:false,
   saveUninitialized:true,
   cookie:{
